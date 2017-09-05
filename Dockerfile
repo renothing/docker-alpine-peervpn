@@ -1,7 +1,7 @@
 
 FROM alpine
 
-MAINTAINER Markus Juenemann <markus@juenemann.net>
+MAINTAINER Thomas Leister <thomas.leister@mailbox.org>
 
 RUN apk upgrade --update && \
     apk add --no-cache --virtual /tmp/.build-deps \
