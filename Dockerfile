@@ -1,5 +1,4 @@
-
-FROM alpine
+FROM alpine:3.6
 
 MAINTAINER Thomas Leister <thomas.leister@mailbox.org>
 
