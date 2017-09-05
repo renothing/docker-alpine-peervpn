@@ -206,7 +206,7 @@ enablerelay ${ENABLERELAY:-no}
 ##               should be set too.
 ## Example:      enableprivdrop yes
 
-#enableprivdrop yes
+enableprivdrop yes
 
 
 
@@ -218,7 +218,7 @@ enablerelay ${ENABLERELAY:-no}
 ##               username with minimal rights should be selected.
 ## Example:      user nobody
 
-#user nobody
+user nobody
 
 
 
@@ -227,7 +227,7 @@ enablerelay ${ENABLERELAY:-no}
 ##               will switch to after initialization.
 ## Example:      group nogroup
 
-#group nogroup
+group nogroup
 
 
 
