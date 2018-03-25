@@ -34,16 +34,46 @@ values are of limited use.
 The example below will run a VPN between two containers. Both containers must
 configure different UDP ports (7001 and 7002) as they are on the same host. 
 In the example below the IP address of the host running Docker is 10.0.2.15.
-
-    docker run --name=vpn1 -p 7001:7001/udp --cap-add=NET_ADMIN \
+```
+docker run --name=vpn1 -p 7001:7001/udp --cap-add=NET_ADMIN \
         -e NETWORKNAME=mynet -e PSK=mykey -e PORT=7001 \
         -e INITPEERS='10.0.2.15 7002' -e IFCONFIG4='172.16.1.1/24' -d \
         renothing/peervpn
     
-    docker run --name=vpn2 -p 7002:7002/udp --cap-add=NET_ADMIN \
+docker run --name=vpn2 -p 7002:7002/udp --cap-add=NET_ADMIN \
         -e NETWORKNAME=mynet -e PSK=mykey -e PORT=7002 \
         -e INITPEERS='10.0.2.15 7001' -e IFCONFIG4='172.16.1.2/24' -d \
         renothing/peervpn
+```
+use dhclient for autoscaling with the following upcmd:
+
+peervpn-dnsmasq.conf
+```
+interface dnsmasq0
+ifconfig4 10.0.2.1/24
+upcmd dnsmasq -i dnsmasq0 --dhcp-range=10.0.2.2,10.0.2.254,255.255.255.0,12h
+port 5678
+```
+
+peervpn-dhclient.conf
+```
+initpeers 127.0.0.1 5678
+interface dhclient0
+upcmd dhclient -nw dhclient0
+```
+
+  for docker:
+```
+#for init peer or any node you want run dhcp
+UPCMD=dnsmasq -i $INTERFACE --dhcp-range=10.1.1.7,10.1.1.250,255.255.255.0,infinite
+#for other peer
+UPCMD=dhclient -nw ${INTERFACE}
+```
+Apparently, DHCP will work over the VPN. So, you could have a static head node (in this example defined in peervpn-dhclient.conf with initpeers 127.0.0.1 5678) that serves up DHCP addresses.
+
+So, you would only need to specify a static address for one node (so dnsmasq can bind to an address) and each other nodes would need to know at least the head node's (or another node's) address.
+
+ref: https://github.com/peervpn/peervpn/issues/10#issuecomment-176987373
 
 ### Use as a base image
 

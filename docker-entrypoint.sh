@@ -250,7 +250,7 @@ chmod 0600 /etc/peervpn.conf
 
 # This must be done from inside the running container.
 # (https://github.com/mjuenema/docker-alpine-peervpn/issues/3)
-mkdir -p /dev/net
-mknod /dev/net/tun c 10 200
+test -d /dev/net || mkdir -p /dev/net
+test -c /dev/net/tun || mknod /dev/net/tun c 10 200
 
 exec /sbin/peervpn /etc/peervpn.conf

@@ -19,7 +19,7 @@ RUN apk upgrade --update && \
         abuild \
         binutils \
         bash && \
-    apk add tzdata && \
+    apk add tzdata iproute2 dhclient dnsmasq && \
     rm -rfv /var/cache/apk/* && \
     git clone https://github.com/peervpn/peervpn.git /tmp/peervpn.git && \
     cd /tmp/peervpn.git && \
