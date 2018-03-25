@@ -1,7 +1,9 @@
 #!/bin/sh
 
 set -e
-
+#set timezone
+cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime 
+echo "${TIMEZONE}" > /etc/TZ
 # Create /etc/peervpn.conf if it does not exist.
 #
 if [ ! -f /etc/peervpn.conf ]; then
@@ -87,7 +89,7 @@ ifconfig4 ${IFCONFIG4:-172.16.254.$(expr $RANDOM % 256)/24}
 ## Example:      ifconfig6 2001:db8:1:2::3/64
 ##               ifconfig6 fc00:db8:1:2::3/64
 
-ifconfig6 ${IFCONFIG4:-fe80::1034:56ff:fe78:$(expr $RANDOM % 10000)/64}
+ifconfig6 ${IFCONFIG6:-fe80::1034:56ff:fe78:$(expr $RANDOM % 10000)/64}
 
 
 ## Option:       upcmd <command>
@@ -95,7 +97,7 @@ ifconfig6 ${IFCONFIG4:-fe80::1034:56ff:fe78:$(expr $RANDOM % 10000)/64}
 ##               the TAP device has been opened.
 ## Example:      upcmd echo virtual interface is up
 
-#upcmd echo virtual interface is up
+upcmd ${UPCMD:-echo virtual interface is up}
 
 
 

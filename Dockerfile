@@ -1,7 +1,8 @@
-FROM alpine:3.6
-
-MAINTAINER Thomas Leister <thomas.leister@mailbox.org>
-
+FROM alpine
+LABEL author='renothing' role='vpn' tags='peervpn' description='peervpn based on alpine'
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    TIMEZONE="Asia/Shanghai"
+#RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g;s/http/https/g' /etc/apk/repositories && apk update && \
 RUN apk upgrade --update && \
     apk add --no-cache --virtual /tmp/.build-deps \
         libressl \
@@ -18,6 +19,7 @@ RUN apk upgrade --update && \
         abuild \
         binutils \
         bash && \
+    apk add tzdata && \
     rm -rfv /var/cache/apk/* && \
     git clone https://github.com/peervpn/peervpn.git /tmp/peervpn.git && \
     cd /tmp/peervpn.git && \
@@ -26,8 +28,6 @@ RUN apk upgrade --update && \
     install -m 755 peervpn /sbin/peervpn && \
     cd / && \
     rm -rf /tmp/peervpn.git && \
-    apk del /tmp/.build-deps
-
+    apk del --purge -r /tmp/.build-deps
 COPY docker-entrypoint.sh /
-
 ENTRYPOINT ["/docker-entrypoint.sh"]

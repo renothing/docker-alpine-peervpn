@@ -1,13 +1,10 @@
-[![Travis-CI](https://img.shields.io/travis/mjuenema/docker-alpine-peervpn.svg?style=flat-square)](https://travis-ci.org/mjuenema/docker-alpine-peervpn/branches)
-[![GitHub release](https://img.shields.io/github/release/mjuenema/docker-alpine-peervpn.svg?style=flat-square)](https://github.com/mjuenema/docker-alpine-peervpn)
-
 # Docker image running PeerVPN
 
 ## Usage
 
 Pull the image from Dockerhub.
 
-    docker pull mjuenema/alpine-peervpn
+    docker pull renothing/peervpn
 
 ### Running the image directly
 
@@ -26,7 +23,8 @@ values are of limited use.
 | ENABLETUNNELING | yes |
 | INTERFACE | peervpn0 |
 | IFCONFIG4 | 172.16.254.$(expr $RANDOM % 256)/24 |
-| IFCONFIG4 | fe80::1034:56ff:fe78:$(expr $RANDOM % 10000)/64 |
+| IFCONFIG6 | fe80::1034:56ff:fe78:$(expr $RANDOM % 10000)/64 |
+| UPCMD | your init cmd here |
 | LOCAL | 0.0.0.0 |
 | PORT | 7000 |
 | ENABLEIPV4 | yes |
@@ -40,45 +38,44 @@ In the example below the IP address of the host running Docker is 10.0.2.15.
     docker run --name=vpn1 -p 7001:7001/udp --cap-add=NET_ADMIN \
         -e NETWORKNAME=mynet -e PSK=mykey -e PORT=7001 \
         -e INITPEERS='10.0.2.15 7002' -e IFCONFIG4='172.16.1.1/24' -d \
-        mjuenema/alpine-peervpn
+        renothing/peervpn
     
     docker run --name=vpn2 -p 7002:7002/udp --cap-add=NET_ADMIN \
         -e NETWORKNAME=mynet -e PSK=mykey -e PORT=7002 \
         -e INITPEERS='10.0.2.15 7001' -e IFCONFIG4='172.16.1.2/24' -d \
-        mjuenema/alpine-peervpn
+        renothing/peervpn
 
 ### Use as a base image
 
 This image can also be used as a base image. `COPY` your own PeerVPN configuration
 file and overwrite the `ENTRYPOINT`.
 
+### Running image via docker-compose
+
 ```
-FROM mjuenema/alpine-linux
+version: '3'
 
-COPY peervpn.conf /etc/peervpn.conf
-
-ENTRYPOINT ['/sbin/peervpn', '/etc/peervpn.conf']
+services:
+    peervpn:
+        image: renothing/peervpn
+        network_mode: "host"
+        cap_add:
+            - NET_ADMIN
+        restart: "always"
+        environment:
+            NETWORKNAME: srvnet
+            INTERFACE: "srvnet0"
+            PSK: thisisapresharedkey
+            LOCAL: "0.0.0.0"
+            PORT: 7000
+            INITPEERS: "1.2.3.4 7000"
+            IFCONFIG4: "10.8.0.1/24"
+            ENABLERELAY: "yes"
+            ENABLEIPV6: "no"
 ```
 
-## Author
+## Authors
 
-Markus Juenemann <markus@juenemann.net>
-
-## Changelog
-
-### `0.3`
-
-* Merged [changes by *ThomasLeister*](https://github.com/mjuenema/docker-alpine-peervpn/pull/6).
-
-### `0.2`
-
-* Fixed [Issue 4](https://github.com/mjuenema/docker-alpine-peervpn/issues/4). Thanks
-  to *jazzdd86* for reporting this.
-* Added testing with Travis-CI against multiple Alpine Linux releases.
-* Replaced `--privileged` with `--cap-add=NET_ADMIN` in example and tests.
-  [Issue 3](https://github.com/mjuenema/docker-alpine-peervpn/issues/3) and
-  [Issue 2](https://github.com/mjuenema/docker-alpine-peervpn/issues/2).
-
-### `0.1`
-
-* Initial version.
+* renothing (Fork)
+* Thomas Leister <thomas.leister@mailbox.org> (Fork)
+* Markus Juenemann <markus@juenemann.net> (Original author)
