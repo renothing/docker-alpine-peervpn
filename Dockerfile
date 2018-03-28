@@ -2,7 +2,7 @@ FROM alpine
 LABEL author='renothing' role='vpn' tags='peervpn' description='peervpn based on alpine'
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
     TIMEZONE="Asia/Shanghai"
-#RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g;s/http/https/g' /etc/apk/repositories && apk update && \
+#RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g;s/http/https/g' /etc/apk/repositories && apk upgrade --update && \
 RUN apk upgrade --update && \
     apk add --no-cache --virtual /tmp/.build-deps \
         libressl \

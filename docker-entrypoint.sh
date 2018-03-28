@@ -119,7 +119,7 @@ local ${LOCAL:-0.0.0.0}
 ##               automatically.
 ## Example:      port 7000
 
-port ${PORT:-7000}
+port ${PORT:-$(expr $RANDOM % 10240 + 1024)}
 
 
 
@@ -176,7 +176,7 @@ enableipv6 ${ENABLEIPV6:-no}
 ##               Defaults to "no".
 ## Example:      enablendpcache yes
 
-#enablendpcache no
+enablendpcache ${ENABLENDP:-yes}
 
 
 

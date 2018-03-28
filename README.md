@@ -28,7 +28,8 @@ values are of limited use.
 | LOCAL | 0.0.0.0 |
 | PORT | 7000 |
 | ENABLEIPV4 | yes |
-| ENABLEIPV6 | yes |
+| ENABLEIPV6 | no |
+| ENABLENDP | yes |
 | ENABLERELAY | no |
 
 The example below will run a VPN between two containers. Both containers must
