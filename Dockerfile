@@ -14,14 +14,15 @@ RUN apk upgrade --update && \
         musl-utils \
         build-base \
         abuild \
+        autoconf \
+        automake \
         binutils \
         bash && \
     rm -rfv /var/cache/apk/* && \
-    git clone https://github.com/atta/peervpn.git /tmp/peervpn.git && \
+    git clone https://github.com/vpnable/MeshVPN.git /tmp/peervpn.git && \
     cd /tmp/peervpn.git && \
-    CFLAGS=-Wall make -j$(getconf _NPROCESSORS_ONLN) && \
-    cp peervpn /sbin/peervpn && \
-    install -m 755 peervpn /sbin/peervpn && \
+    ./autogen.sh && ./configure && make && \
+    install -m 755 src/meshvpn /sbin/peervpn && \
     cd / && \
     rm -rf /tmp/peervpn.git && \
     apk del --purge -r /tmp/.build-deps
